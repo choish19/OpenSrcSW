@@ -57,10 +57,12 @@ public class makeKeyword {
 					KeywordExtractor ke = new KeywordExtractor();
 					KeywordList kl = ke.extractKeyword(bodyNode.getTextContent(), true);
 					String setText = ""; //body태그에 넣을 text
+					
 					for(int k = 0; k < kl.size(); k++) {
 						Keyword kwrd = kl.get(k);
 						setText += kwrd.getString() + ":" + kwrd.getCnt() + "#";
 					}
+					setText = setText.substring(0, setText.length()-1);
 					bodyNode.setTextContent(setText);
 					break;
 				}
