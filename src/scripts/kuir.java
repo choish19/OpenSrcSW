@@ -9,7 +9,7 @@ import org.xml.sax.SAXException;
 
 public class kuir {
 
-	public static void main(String[] args) throws ParserConfigurationException, IOException, TransformerException, SAXException {
+	public static void main(String[] args) throws ParserConfigurationException, IOException, TransformerException, SAXException, ClassNotFoundException {
 		
 		String command = args[0];   
 		String path = args[1];
