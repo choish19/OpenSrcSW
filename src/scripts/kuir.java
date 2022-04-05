@@ -26,5 +26,11 @@ public class kuir {
 			indexer indexer = new indexer(path);
 			indexer.convertXml();
 		}
+		else if(command.equals("-s")) {
+			String command2 = args[2];
+			String query = args[3];
+			searcher searcher = new searcher(path, query);
+			searcher.searchPost();
+		}
 	}
 }
