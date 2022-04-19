@@ -61,6 +61,7 @@ public class searcher {
 		 * value: (ArrayList)[(IntDouble)[문서번호, 가중치],[문서번호, 가중치],...]
 		 */
 		//IntDouble { int num(문서번호), double w(가중치) }
+		innerArray = InnerProduct();
 		for(int k = 0; k < kl.size(); k++) {
 			Keyword kwrd = kl.get(k);
 			String key = kwrd.getString();
@@ -70,7 +71,6 @@ public class searcher {
 				if(keyMap.containsKey(key)) {
 					for(int j = 0; j < keyMap.get(key).size(); j++) { //해당 키워드를 포함한 문서 수
 						if(keyMap.get(key).get(j).num == i) { //문서번호가 같다면
-							innerArray[i] += w * keyMap.get(key).get(j).w; //해당 문서와의 내적 계산
 							idSize[i] += keyMap.get(key).get(j).w * keyMap.get(key).get(j).w; //해당 id문서의 가중치 제곱 계산
 							//keyMap에 키워드의 가중치가 0인 문서 번호는 포함되어있지 않으므로 계산에서 제외됨. qSize의 가중치 제곱 계산 부분이 바깥에 있는 이유
 							break;
@@ -115,7 +115,48 @@ public class searcher {
 			System.out.println("-" + title + "\t\t유사도: " + String.format("%.2f", simArray[idx[i]]));
 		}
 	}
-
+	public double[] InnerProduct() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
+		FileInputStream fileStream = new FileInputStream(this.input_file);
+		ObjectInputStream objectInputStream = new ObjectInputStream(fileStream);
+		
+		Object object = objectInputStream.readObject();
+		objectInputStream.close();
+		
+		File file = new File("./index.xml");
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		Document docs = docBuilder.parse(file);
+		NodeList docList = docs.getElementsByTagName("doc");
+		int docNum = docList.getLength(); //문서 개수
+		
+		HashMap<String,ArrayList<IntDouble>> keyMap = (HashMap<String,ArrayList<IntDouble>>) object;
+		KeywordExtractor ke = new KeywordExtractor();
+		KeywordList kl = ke.extractKeyword(this.query, true);
+		double[] qArray = new double[docNum]; //유사도 배열
+		//qArray의 index는 문서번호를 나타냄.
+		/*
+		 * keyMap의 구조
+		 * key: (String)키워드
+		 * value: (ArrayList)[(IntDouble)[문서번호, 가중치],[문서번호, 가중치],...]
+		 */
+		//IntDouble { int num(문서번호), double w(가중치) }
+		for(int k = 0; k < kl.size(); k++) {
+			Keyword kwrd = kl.get(k);
+			String key = kwrd.getString();
+			int w = kwrd.getCnt();
+			for(int i = 0; i < docNum; i++) {
+				if(keyMap.containsKey(key)) {
+					for(int j = 0; j < keyMap.get(key).size(); j++) {
+						if(keyMap.get(key).get(j).num == i) { //문서번호가 같다면
+							qArray[i] += w * keyMap.get(key).get(j).w; //해당 문서의 유사도 계산
+							break;
+						}
+					}
+				}
+			}
+		}
+		return qArray;
+	}
 	public void searchPost() {
 		System.out.println("5주차 실행완료");
 	}
