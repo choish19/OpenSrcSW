@@ -27,9 +27,9 @@ public class searcher {
 	public searcher(String path, String query) throws ClassNotFoundException, IOException, ParserConfigurationException, SAXException {
 		this.input_file = path;
 		this.query = query;
-		this.CalcSim();
+		this.InnerProduct();
 	}
-	public void CalcSim() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
+	public void InnerProduct() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
 		FileInputStream fileStream = new FileInputStream(this.input_file);
 		ObjectInputStream objectInputStream = new ObjectInputStream(fileStream);
 		
